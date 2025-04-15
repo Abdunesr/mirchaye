@@ -66,9 +66,9 @@ class _FancyDrawerState extends State<FancyDrawer>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color.fromARGB(255, 236, 191, 108),
+              Color.fromARGB(255, 197, 90, 2),
+              Color.fromARGB(255, 234, 184, 78),
               Color.fromARGB(255, 149, 71, 7),
-              Color.fromARGB(255, 228, 211, 136),
             ],
           ),
         ),
@@ -90,6 +90,7 @@ class _FancyDrawerState extends State<FancyDrawer>
                     ),
                     boxShadow: [
                       BoxShadow(
+                        // ignore: deprecated_member_use
                         color: Colors.black.withOpacity(0.3),
                         blurRadius: 20,
                         spreadRadius: 2,
