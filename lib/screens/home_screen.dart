@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mirchaye/data/news_data.dart';
 import 'package:mirchaye/model/news.dart';
+import 'package:mirchaye/screens/about_us_screen..dart';
 import 'package:mirchaye/widgets/drawer.dart';
 import 'package:mirchaye/widgets/news_card.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -73,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   expandedHeight: 200,
                   stretch: true,
                   flexibleSpace: FlexibleSpaceBar(
-                    stretchModes: const [StretchMode.zoomBackground],
+                    stretchModes: const [StretchMode.fadeTitle],
                     background: CachedNetworkImage(
                       imageUrl:
                           'https://www.aljazeera.com/wp-content/uploads/2021/06/AP21172175474350.jpg?fit=1170%2C780',
@@ -114,8 +115,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   actions: [
                     IconButton(
-                      icon: const Icon(Icons.search, color: Colors.white),
-                      onPressed: () {},
+                      icon: const Icon(Icons.group, color: Colors.white),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AboutUsPage()),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -146,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 top: MediaQuery.of(context).size.height / 2 - 25,
                 child: AnimatedOpacity(
                   opacity: _showDrawerHint ? 1 : 0,
-                  duration: const Duration(milliseconds: 500),
+                  duration: const Duration(milliseconds: 50000),
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
