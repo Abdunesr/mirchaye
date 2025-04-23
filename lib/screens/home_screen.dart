@@ -1,10 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mirchaye/data/news_data.dart';
 import 'package:mirchaye/model/news.dart';
 import 'package:mirchaye/screens/about_us_screen..dart';
+
 import 'package:mirchaye/widgets/drawer.dart';
 import 'package:mirchaye/widgets/news_card.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,21 +15,55 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final List<News> newsList = newsData.map((e) => News.fromJson(e)).toList();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   double _dragPosition = 0;
   bool _showDrawerHint = true;
+  late PageController _pageController;
+  int _currentAdIndex = 0;
+  late Timer _adTimer;
+
+  // Ad images for the flexible space
+  final List<String> _adImages = [
+    'https://tse4.mm.bing.net/th/id/OIP.QCy_Hu4jitgmTD3xM9h_KwHaFj?w=640&h=480&rs=1&pid=ImgDetMain',
+    'https://th.bing.com/th/id/OIP.g1XbNYY1TXf9Q3VidFeO0wHaFA?w=209&h=180&c=7&r=0&o=5&dpr=1.5&pid=1.7',
+    'https://th.bing.com/th/id/OIP.n7krWyXZGpVv1KsPrjhSkgHaEK?w=319&h=180&c=7&r=0&o=5&dpr=1.5&pid=1.7',
+  ];
 
   @override
   void initState() {
     super.initState();
-    // Hide drawer hint after 5 seconds
+    _pageController = PageController(viewportFraction: 1.0);
+    _startAdCarousel();
+
     Future.delayed(const Duration(seconds: 5), () {
-      if (mounted) {
-        setState(() => _showDrawerHint = false);
+      if (mounted) setState(() => _showDrawerHint = false);
+    });
+  }
+
+  void _startAdCarousel() {
+    _adTimer = Timer.periodic(const Duration(seconds: 4), (Timer timer) {
+      if (_currentAdIndex < _adImages.length - 1) {
+        _currentAdIndex++;
+      } else {
+        _currentAdIndex = 0;
+      }
+      if (_pageController.hasClients) {
+        _pageController.animateToPage(
+          _currentAdIndex,
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeInOut,
+        );
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _adTimer.cancel();
+    super.dispose();
   }
 
   @override
@@ -35,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       key: _scaffoldKey,
       extendBodyBehindAppBar: true,
-      drawer: FancyDrawer(), // Replace with your drawer widget
+      drawer: const FancyDrawer(),
       body: GestureDetector(
         onHorizontalDragUpdate: (details) {
           setState(() {
@@ -46,9 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           });
         },
-        onHorizontalDragEnd: (_) {
-          setState(() => _dragPosition = 0);
-        },
+        onHorizontalDragEnd: (_) => setState(() => _dragPosition = 0),
         child: Stack(
           children: [
             // Background Gradient
@@ -66,29 +100,55 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Content
             CustomScrollView(
               slivers: [
-                // AppBar with parallax effect
                 SliverAppBar(
                   expandedHeight: 200,
                   stretch: true,
                   flexibleSpace: FlexibleSpaceBar(
                     stretchModes: const [StretchMode.fadeTitle],
-                    background: CachedNetworkImage(
-                      imageUrl:
-                          'https://www.aljazeera.com/wp-content/uploads/2021/06/AP21172175474350.jpg?fit=1170%2C780',
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: Colors.grey[300],
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: Colors.grey[300],
-                        child: Icon(Icons.error_outline, color: Colors.red),
-                      ),
-                      fadeInDuration: const Duration(milliseconds: 500),
-                      filterQuality: FilterQuality.high,
+                    background: Stack(
+                      children: [
+                        // Auto-scrolling ads
+                        PageView.builder(
+                          controller: _pageController,
+                          onPageChanged: (index) {
+                            setState(() => _currentAdIndex = index);
+                          },
+                          itemCount: _adImages.length,
+                          itemBuilder: (context, index) {
+                            return CachedNetworkImage(
+                              imageUrl: _adImages[index],
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Container(
+                                color: Colors.grey[300],
+                                child: const Center(
+                                    child: CircularProgressIndicator()),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                color: Colors.grey[300],
+                                child: const Icon(Icons.error_outline,
+                                    color: Colors.red),
+                              ),
+                              fadeInDuration: const Duration(milliseconds: 500),
+                            );
+                          },
+                        ),
+
+                        // Gradient overlay
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                Colors.black.withOpacity(0.7),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     title: const Text(
                       "Election News",
@@ -127,6 +187,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
 
+                // Ad indicator dots
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(_adImages.length, (index) {
+                        return Container(
+                          width: 8,
+                          height: 8,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _currentAdIndex == index
+                                ? Colors.white
+                                : Colors.white.withOpacity(0.5),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ),
+
                 // News List
                 SliverPadding(
                   padding: const EdgeInsets.only(top: 16),
@@ -153,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 top: MediaQuery.of(context).size.height / 2 - 25,
                 child: AnimatedOpacity(
                   opacity: _showDrawerHint ? 1 : 0,
-                  duration: const Duration(milliseconds: 50000),
+                  duration: const Duration(milliseconds: 500),
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
@@ -189,12 +272,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-
-      // Floating Action Button
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Handle refresh or other action
-        },
+        onPressed: () {},
         backgroundColor: Colors.blueAccent,
         child: const Icon(Icons.refresh, color: Colors.white),
         elevation: 4,
