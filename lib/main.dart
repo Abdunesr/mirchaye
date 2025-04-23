@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       title: 'Eth',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.deepOrange,
         fontFamily: 'Roboto',
       ),
       home: MainTabs(),
@@ -46,10 +46,10 @@ class _MainTabsState extends State<MainTabs> with TickerProviderStateMixin {
         Icons.newspaper, "News", Color.fromARGB(170, 241, 157, 55)), // Purple
     BottomNavigationItem(
         Icons.groups, "Parties", Color.fromARGB(170, 241, 157, 55)), // Teal
+    BottomNavigationItem(Icons.card_membership, "NEBE",
+        Color.fromARGB(170, 241, 157, 55)), // Blue
     BottomNavigationItem(
-        Icons.analytics, "Stats", Color.fromARGB(170, 241, 157, 55)), // Blue
-    BottomNavigationItem(
-        Icons.person, "Profile", Color.fromARGB(170, 241, 157, 55)), // Pink
+        Icons.settings, "Setting", Color.fromARGB(170, 241, 157, 55)), // Pink
   ];
 
   @override
@@ -91,7 +91,7 @@ class _MainTabsState extends State<MainTabs> with TickerProviderStateMixin {
     final itemWidth = width / _navItems.length;
 
     return Scaffold(
-      drawer: const FancyDrawer(),
+      drawer: const ElectionDrawer(),
       body: _screens[_currentIndex],
       bottomNavigationBar: Container(
         height: 90,
@@ -105,15 +105,11 @@ class _MainTabsState extends State<MainTabs> with TickerProviderStateMixin {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Color(0xFF2D3436),
-                      Color(0xFF1E272E),
+                      Color.fromARGB(255, 33, 46, 49),
+                      Color.fromARGB(255, 59, 72, 81),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                  ),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
                   ),
                   boxShadow: [
                     BoxShadow(

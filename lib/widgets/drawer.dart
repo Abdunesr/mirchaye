@@ -1,276 +1,247 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
-class FancyDrawer extends StatefulWidget {
-  const FancyDrawer({Key? key}) : super(key: key);
-
-  @override
-  _FancyDrawerState createState() => _FancyDrawerState();
-}
-
-class _FancyDrawerState extends State<FancyDrawer>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-
-    _scaleAnimation = Tween<double>(begin: 0.9, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeOutQuint,
-      ),
-    );
-
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: const Interval(0.3, 1.0, curve: Curves.easeIn),
-      ),
-    );
-
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(-1.5, 0.0),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeOut,
-      ),
-    );
-
-    _animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
+class ElectionDrawer extends StatelessWidget {
+  const ElectionDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Drawer(
-      elevation: 0,
+      elevation: 16,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.horizontal(right: Radius.circular(24)),
+      ),
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color.fromARGB(255, 197, 90, 2),
-              Color.fromARGB(255, 234, 184, 78),
-              Color.fromARGB(255, 149, 71, 7),
+              colorScheme.primaryContainer,
+              colorScheme.secondaryContainer,
             ],
           ),
         ),
-        child: ScaleTransition(
-          scale: _scaleAnimation,
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: Column(
-              children: [
-                // Header with image
-                Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        'https://th.bing.com/th/id/R.1a8508f6149848e61ee9a7aa7b0478b1?rik=Heauht2m2dW1Hg&pid=ImgRaw&r=0',
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        // ignore: deprecated_member_use
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 20,
-                        spreadRadius: 2,
-                      )
-                    ],
-                  ),
-                  child: Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              Colors.black.withOpacity(0.7),
-                              Colors.transparent,
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 20,
-                        left: 20,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Election App',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Montserrat',
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              'Make your vote count!',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
-                                fontSize: 14,
-                                fontFamily: 'Montserrat',
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            // Header
+            DrawerHeader(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: colorScheme.outlineVariant.withOpacity(0.2),
+                    width: 1,
                   ),
                 ),
-
-                // Menu items
-                Expanded(
-                  child: SlideTransition(
-                    position: _slideAnimation,
-                    child: ListView(
-                      padding: EdgeInsets.zero,
-                      children: [
-                        _buildMenuItem(
-                          icon: Icons.home,
-                          title: 'Home',
-                          onTap: () => _navigateTo('/home'),
-                        ),
-                        _buildMenuItem(
-                          icon: Icons.how_to_vote,
-                          title: 'Vote Now',
-                          onTap: () => _navigateTo('/vote'),
-                        ),
-                        _buildMenuItem(
-                          icon: Icons.people,
-                          title: 'Candidates',
-                          onTap: () => _navigateTo('/candidates'),
-                        ),
-                        _buildMenuItem(
-                          icon: Icons.bar_chart,
-                          title: 'Polls',
-                          onTap: () => _navigateTo('/polls'),
-                        ),
-                        _buildMenuItem(
-                          icon: Icons.info,
-                          title: 'About Election',
-                          onTap: () => _navigateTo('/about'),
-                        ),
-                        const Divider(
-                          color: Colors.white24,
-                          height: 30,
-                          thickness: 1,
-                          indent: 20,
-                          endIndent: 20,
-                        ),
-                        _buildMenuItem(
-                          icon: Icons.settings,
-                          title: 'Settings',
-                          onTap: () => _navigateTo('/settings'),
-                        ),
-                        _buildMenuItem(
-                          icon: Icons.help,
-                          title: 'Help & Feedback',
-                          onTap: () => _navigateTo('/help'),
-                        ),
-                      ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 28,
+                    backgroundColor: colorScheme.primary,
+                    child:
+                        const Icon(Icons.person, size: 32, color: Colors.white),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Election Portal',
+                    style: textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
                     ),
                   ),
-                ),
-
-                // Footer
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Powered by Democracy',
-                        style: TextStyle(
-                          color: Colors.white54,
-                          fontSize: 12,
-                          fontFamily: 'Montserrat',
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.facebook,
-                                color: Colors.white54),
-                            onPressed: () {},
-                          ),
-                          IconButton(
-                            icon: const Icon(FontAwesome.twitter,
-                                color: Colors.white54),
-                            onPressed: () {},
-                          ),
-                          IconButton(
-                            icon: const Icon(FontAwesome.instagram,
-                                color: Colors.white54),
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-                    ],
+                  Text(
+                    'v2.4.0',
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurface.withOpacity(0.6),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
+
+            // Election Section
+            _SectionHeader(
+              icon: Icons.how_to_vote,
+              title: 'Election',
+              color: colorScheme.primary,
+            ),
+            _DrawerTile(
+              icon: Icons.trending_up,
+              title: 'Live Results',
+              onTap: () {},
+            ),
+            _DrawerTile(
+              icon: Icons.calendar_today,
+              title: 'Schedule',
+              onTap: () {},
+            ),
+            _DrawerTile(
+              icon: Icons.location_on,
+              title: 'Polling Stations',
+              onTap: () {},
+            ),
+
+            // Parties Section
+            _SectionHeader(
+              icon: Icons.groups,
+              title: 'Parties',
+              color: Colors.blue,
+            ),
+            _DrawerTile(
+              icon: Icons.flag,
+              title: 'Registered Parties',
+              onTap: () {},
+            ),
+            _DrawerTile(
+              icon: Icons.assignment,
+              title: 'Manifestos',
+              onTap: () {},
+            ),
+            _DrawerTile(
+              icon: Icons.leaderboard,
+              title: 'Candidates',
+              onTap: () {},
+            ),
+
+            // Settings Section
+            _SectionHeader(
+              icon: Icons.settings,
+              title: 'Settings',
+              color: Colors.grey,
+            ),
+            _DrawerTile(
+              icon: Icons.notifications,
+              title: 'Notifications',
+              onTap: () {},
+            ),
+            _DrawerTile(
+              icon: Icons.language,
+              title: 'Language',
+              onTap: () {},
+            ),
+            _DrawerTile(
+              icon: Icons.dark_mode,
+              title: 'Theme',
+              onTap: () {},
+            ),
+
+            // Ads Section
+            _SectionHeader(
+              icon: Icons.campaign,
+              title: 'Campaigns',
+              color: Colors.orange,
+            ),
+            _DrawerTile(
+              icon: Icons.ad_units,
+              title: 'Political Ads',
+              onTap: () {},
+            ),
+            _DrawerTile(
+              icon: Icons.mic,
+              title: 'Announcements',
+              onTap: () {},
+            ),
+
+            // Aid Section
+            _SectionHeader(
+              icon: Icons.help_outline,
+              title: 'Aid',
+              color: Colors.green,
+            ),
+            _DrawerTile(
+              icon: Icons.help,
+              title: 'Voter Help',
+              onTap: () {},
+            ),
+            _DrawerTile(
+              icon: Icons.accessibility,
+              title: 'Accessibility',
+              onTap: () {},
+            ),
+            _DrawerTile(
+              icon: Icons.contact_support,
+              title: 'Contact EC',
+              onTap: () {},
+            ),
+
+            const Divider(height: 32, thickness: 1),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: TextButton.icon(
+                icon: const Icon(Icons.logout),
+                label: const Text('Sign Out'),
+                onPressed: () {},
+                style: TextButton.styleFrom(
+                  foregroundColor: colorScheme.error,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final Color color;
+
+  const _SectionHeader({
+    required this.icon,
+    required this.title,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: color),
+          const SizedBox(width: 12),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
-        ),
+        ],
       ),
     );
   }
+}
 
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
+class _DrawerTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  const _DrawerTile({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(
-        icon,
-        color: Colors.white.withOpacity(0.8),
-        size: 24,
+      leading: Icon(icon),
+      title: Text(title),
+      onTap: onTap,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
       ),
-      title: Text(
-        title,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontFamily: 'Montserrat',
-        ),
-      ),
-      onTap: () {
-        _animationController.reverse().then((_) {
-          onTap();
-        });
-      },
-      hoverColor: Colors.white.withOpacity(0.1),
-      focusColor: Colors.white.withOpacity(0.05),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      visualDensity: const VisualDensity(vertical: -2),
     );
-  }
-
-  void _navigateTo(String route) {
-    Navigator.of(context).pushNamed(route);
   }
 }
