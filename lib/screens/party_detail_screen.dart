@@ -13,12 +13,9 @@ class PartyDetailScreen extends StatelessWidget {
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
-            Hero(
-              tag: party.id,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.network(party.logoUrl, height: 150),
-              ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.network(party.logoUrl, height: 150),
             ),
             SizedBox(height: 20),
             Text(

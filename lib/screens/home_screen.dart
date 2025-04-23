@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Scaffold(
       key: _scaffoldKey,
       extendBodyBehindAppBar: true,
-      drawer: const FancyDrawer(),
+      drawer: const ElectionDrawer(),
       body: GestureDetector(
         onHorizontalDragUpdate: (details) {
           setState(() {
@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color(0xFF0F2027),
+                    Color.fromARGB(255, 45, 58, 68),
                     Color(0xFF203A43),
                     Color(0xFF2C5364),
                   ],
@@ -274,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: const Color.fromARGB(255, 41, 56, 61),
         child: const Icon(Icons.refresh, color: Colors.white),
         elevation: 4,
       ),
