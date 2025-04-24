@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Scaffold(
       key: _scaffoldKey,
       extendBodyBehindAppBar: true,
-      drawer: const ElectionDrawer(),
+      drawer: const ModernElectionDrawer(),
       body: GestureDetector(
         onHorizontalDragUpdate: (details) {
           setState(() {

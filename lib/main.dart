@@ -93,7 +93,7 @@ class _MainTabsState extends State<MainTabs> with TickerProviderStateMixin {
     final itemWidth = width / _navItems.length;
 
     return Scaffold(
-      drawer: const ElectionDrawer(),
+      drawer: const ModernElectionDrawer(),
       body: _screens[_currentIndex],
       bottomNavigationBar: Container(
         height: 90,
