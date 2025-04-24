@@ -12,7 +12,7 @@ class PartyListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: const Color.fromARGB(255, 44, 57, 61),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
