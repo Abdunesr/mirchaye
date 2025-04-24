@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mirchaye/screens/nebe_screen.dart';
+import 'package:mirchaye/screens/settings_screen.dart';
 import 'package:mirchaye/widgets/drawer.dart';
 import 'screens/home_screen.dart';
 import 'screens/party_list_screen.dart';
@@ -36,8 +38,8 @@ class _MainTabsState extends State<MainTabs> with TickerProviderStateMixin {
   final List<Widget> _screens = [
     HomeScreen(),
     PartyListScreen(),
-    PartyListScreen(), // Placeholder for 3rd tab
-    PartyListScreen(), // Placeholder for 4th tab
+    NebeScreen(), // Placeholder for 3rd tab
+    SettingsScreen(), // Placeholder for 4th tab
   ];
 
   // Updated color scheme
