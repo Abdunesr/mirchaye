@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mirchaye/data/news_data.dart';
 import 'package:mirchaye/model/news.dart';
 import 'package:mirchaye/screens/about_us_screen..dart';
+import 'package:mirchaye/screens/news_detail_screen.dart';
 
 import 'package:mirchaye/widgets/drawer.dart';
 import 'package:mirchaye/widgets/news_card.dart';
@@ -219,7 +220,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 8),
-                          child: NewsCard(news: newsList[index]),
+                          child: GestureDetector(
+                              onTap: () => {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              NewsDetailScreen(
+                                                  news: newsList[index]),
+                                        ))
+                                  },
+                              child: NewsCard(news: newsList[index])),
                         );
                       },
                       childCount: newsList.length,
